@@ -13,3 +13,15 @@ message HelloRequest {
 message HelloReply {
     string message = 1;
 }
+
+service Service2 {
+    rpc SayHelloFromService2 (RequestService2) returns (ReplyService2);
+}
+
+message RequestService2 {
+    string name = 1;
+}
+
+message ReplyService2 {
+    string message = 1;
+}

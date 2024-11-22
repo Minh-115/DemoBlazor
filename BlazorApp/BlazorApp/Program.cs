@@ -31,6 +31,10 @@ builder.Services.AddGrpcClient<Greeter.GreeterClient>(options =>
 {
     options.Address = new Uri("https://localhost:5001");
 });
+builder.Services.AddGrpcClient<Service2.Service2Client>(options =>
+{
+    options.Address = new Uri("https://localhost:5001");
+});
 var app = builder.Build();
 app.UseGrpcWeb();
 

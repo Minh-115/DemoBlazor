@@ -4,12 +4,14 @@
 @using static GrpcServer.Greeter
 @rendermode InteractiveServer
 @inject Greeter.GreeterClient GreeterClient
+@inject Service2.Service2Client Service2Client
 
 
 <h3>gRPC Test</h3>
 
 <input @bind="Name" placeholder="Enter your name" />
-<button @onclick="CallGrpc">Send</button>
+<button @onclick="CallGrpc">Gọi GRPC</button>
+<button @onclick="CallGrpcService2">Gửi Mail bằng GRPC</button>
 
 <p>@Message</p>
 
@@ -35,6 +37,19 @@
         try
         {
             var reply = await GreeterClient.SayHelloAsync(new HelloRequest { Name = Name });
+            Message = reply.Message;
+        }
+        catch (Exception ex)
+        {
+            Message = $"Error: {ex.Message}";
+        }
+    }
+    private async Task CallGrpcService2()
+    {
+        
+        try
+        {
+            var reply = await Service2Client.SayHelloFromService2Async(new RequestService2 { Name = Name });
             Message = reply.Message;
         }
         catch (Exception ex)
