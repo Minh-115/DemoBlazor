@@ -1,0 +1,47 @@
+﻿@page "/products/edit/{id:int}"
+@using BlazorApp.Data
+@using BlazorApp.Models
+@inject AppDbContext DbContext
+@inject NavigationManager Navigation
+@using BlazorApp.Repositories.ProductRepository
+@inject IProductRepository ProductRepository
+@rendermode InteractiveServer
+<h3>Edit Product</h3>
+
+<EditForm Model="@product" OnValidSubmit="HandleSubmit">
+	<div>
+		<label>Name:</label>
+		<InputText @bind-Value="product.Name" />
+	</div>
+	<div>
+		<label>Price:</label>
+		<InputNumber @bind-Value="product.Price" />
+	</div>
+	<div>
+		<label>Quantity:</label>
+		<InputNumber @bind-Value="product.Quantity" />
+	</div>
+	<button type="submit">Save</button>
+</EditForm>
+
+@code {
+	[Parameter] public int id { get; set; }
+	private Product product = new Product();
+	protected override async Task OnInitializedAsync()
+	{
+		product = await DbContext.Products.FindAsync(id) ?? new Product();
+	}
+
+	private async Task HandleSubmit()
+	{
+		if (id <= 0)
+		{
+			await ProductRepository.AddAsync(product);
+		}
+		else
+		{
+			await ProductRepository.UpdateAsync(product);
+		}
+		Navigation.NavigateTo("/products");
+	}
+}

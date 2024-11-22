@@ -1,0 +1,45 @@
+﻿@page "/grpctest"
+@using Grpc.Net.Client
+@using GrpcServer
+@using static GrpcServer.Greeter
+@rendermode InteractiveServer
+@inject Greeter.GreeterClient GreeterClient
+
+
+<h3>gRPC Test</h3>
+
+<input @bind="Name" placeholder="Enter your name" />
+<button @onclick="CallGrpc">Send</button>
+
+<p>@Message</p>
+
+@code {
+    private string Name;
+    private string Message;
+
+    // private async Task CallGrpc()
+    // {
+    //     var channel = GrpcChannel.ForAddress("https://localhost:5001");
+    //     var client = new Greeter.GreeterClient(channel);
+    //     var reply = await client.SayHelloAsync(new HelloRequest { Name = Name });
+    //     Message = reply.Message;        
+    // }
+    private async Task CallGrpc()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            Message = "Please enter your name.";
+            return;
+        }
+
+        try
+        {
+            var reply = await GreeterClient.SayHelloAsync(new HelloRequest { Name = Name });
+            Message = reply.Message;
+        }
+        catch (Exception ex)
+        {
+            Message = $"Error: {ex.Message}";
+        }
+    }
+}
