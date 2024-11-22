@@ -13,7 +13,7 @@ namespace GrpcServer.Services
         {
             return Task.FromResult(new HelloReply
             {
-                Message = "Hello from GRPC" + request.Name
+                Message = "Hello from GRPC " + request.Name
             });
         }
 

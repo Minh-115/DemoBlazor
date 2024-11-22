@@ -25,8 +25,13 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 //    var grpcChannel = GrpcChannel.ForAddress("https://localhost:5001");
 //    return new Greeter.GreeterClient(grpcChannel);
 //});
+//commit program.cs
 builder.Services.AddRazorPages();
 builder.Services.AddGrpcClient<Greeter.GreeterClient>(options =>
+{
+    options.Address = new Uri("https://localhost:5001");
+});
+builder.Services.AddGrpcClient<Service2.Service2Client>(options =>
 {
     options.Address = new Uri("https://localhost:5001");
 });
