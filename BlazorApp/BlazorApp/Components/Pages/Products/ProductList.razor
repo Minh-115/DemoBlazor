@@ -14,6 +14,9 @@
 @inject IProductRepository ProductRepository
 @inject IStoredProcedureHelper _spHelper
 @using MudBlazor
+
+@inject ISnackbar Snackbar
+
 <h3>Products</h3>
 
 @* <input placeholder="keyword" @bind="searchKeyword" />
@@ -77,6 +80,9 @@
 <MudText Align="Align.Center">Selected page: @pageIndex</MudText>
 
 
+<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ShowSnackBar">
+	Open Snackbar
+</MudButton>
 <button @onclick="AddProduct">Create New Product</button>
 <button @* @onclick="AddProduct" *@ onclick="ClickMe(this)">Create New Product</button>
 <button @onclick="CallJsFunction">Click Me</button>
@@ -170,6 +176,20 @@
 			totalRows = 0;
 			totalPages = 0;
 		}
+	}
+	private void ShowSnackBar()
+	{
+		Snackbar.Add
+	(
+	@<div>
+		<h3>Hi from a RenderFragment</h3>
+		<ul>
+			<li>Here's a regular item</li>
+			<li>Here's a <strong>bold item</strong></li>
+			<li>Here's an <em>italicized item</em></li>
+		</ul>
+	</div>
+		);
 	}
 
 }
