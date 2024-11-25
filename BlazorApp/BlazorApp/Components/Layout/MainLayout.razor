@@ -1,4 +1,8 @@
 ﻿ @inherits LayoutComponentBase
+ <MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
 <div class="page">
     <div class="sidebar">
@@ -23,13 +27,4 @@
     <a class="dismiss">🗙</a>
 </div>
   
-@* Required*@
-<MudThemeProvider />
 
-@* <MudPopoverProvider /> *@
-
-@* Needed for dialogs *@
-<MudDialogProvider />
-
-@* Needed for snackbars *@
-<MudSnackbarProvider />
