@@ -1,0 +1,95 @@
+﻿@page "/multi-file-upload"
+
+<h3>Multiple File Upload</h3>
+
+<InputFile OnChange="HandleFilesSelected" Multiple />
+<MudBlazor.MudButton Disabled="@(!FilesSelected)" OnClick="UploadFiles">Upload File</MudBlazor.MudButton>
+<ul>
+    @foreach (var file in UploadedFiles)
+    {
+        <li>@file.Name (@file.Size bytes)</li>
+    }
+</ul>
+<p>@UploadMessage</p>
+@code {
+    private List<IBrowserFile> UploadedFiles = new();
+    private string UploadMessage = string.Empty;
+    private bool FilesSelected => UploadedFiles.Any();
+    // private async Task HandleFilesSelected(InputFileChangeEventArgs e)
+    // {
+    //     UploadedFiles.Clear();
+
+    //     foreach (var file in e.GetMultipleFiles())
+    //     {            
+    //         // var buffer = new byte[file.Size];
+    //         // using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024); // Giới hạn 10MB
+    //         // await stream.ReadAsync(buffer);         
+    //         UploadedFiles.Add(file);
+    //     }
+    // }
+    private void HandleFilesSelected(InputFileChangeEventArgs e)
+    {
+        UploadedFiles = e.GetMultipleFiles().ToList();
+    }
+
+    private async Task UploadFiles()
+    {
+        if (!FilesSelected)
+        {
+            UploadMessage = "No files selected.";
+            return;
+        }
+
+        UploadMessage = "Uploading files...";
+        try
+        {
+            // Đường dẫn thư mục upload
+            var uploadFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "uploadfile");
+
+            // Tạo thư mục nếu chưa tồn tại
+            if (!Directory.Exists(uploadFolderPath))
+            {
+                Directory.CreateDirectory(uploadFolderPath);
+            }
+
+            foreach (var file in UploadedFiles)
+            {
+                var sanitizedFileName = Path.GetFileName(file.Name); // Bảo vệ tên file
+                var filePath = Path.Combine(uploadFolderPath, sanitizedFileName);
+
+                using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024); // Giới hạn 10MB
+                using var fileStream = new FileStream(filePath, FileMode.Create);
+
+                // Ghi nội dung file vào thư mục
+                await stream.CopyToAsync(fileStream);
+            }
+
+            UploadMessage = "Files uploaded successfully!";
+            UploadedFiles.Clear(); // Xóa danh sách file sau khi upload
+        }
+        catch (Exception ex)
+        {
+            UploadMessage = $"Error during upload: {ex.Message}";
+        }
+    }
+    private string GetUniqueFilePath(string filePath)
+    {
+        var directory = Path.GetDirectoryName(filePath);
+        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+        var extension = Path.GetExtension(filePath);
+
+        var newFilePath = filePath;
+        var counter = 1;
+
+        while (File.Exists(newFilePath))
+        {
+            newFilePath = Path.Combine(directory, $"{fileNameWithoutExtension}_{counter}{extension}");
+            counter++;
+        }
+
+        return newFilePath;
+    }
+
+    [Inject]
+    private HttpClient Http { get; set; }
+}

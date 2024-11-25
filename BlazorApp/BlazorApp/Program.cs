@@ -5,6 +5,7 @@ using BlazorApp.StoredProcedureHepler;
 using GrpcServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using MudBlazor;
 using MudBlazor.Services;
 var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddRazorPages();
@@ -20,7 +21,18 @@ builder.Services.AddScoped<IStoredProcedureHelper, StoredProcedureHelper>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 //commit program.cs
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopRight;
+
+    config.SnackbarConfiguration.PreventDuplicates = false;
+    config.SnackbarConfiguration.NewestOnTop = false;
+    config.SnackbarConfiguration.ShowCloseIcon = true;
+    config.SnackbarConfiguration.VisibleStateDuration = 10000;
+    config.SnackbarConfiguration.HideTransitionDuration = 500;
+    config.SnackbarConfiguration.ShowTransitionDuration = 500;
+    config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+});
 builder.Services.AddRazorPages();
 builder.Services.AddGrpcClient<Greeter.GreeterClient>(options =>
 {
