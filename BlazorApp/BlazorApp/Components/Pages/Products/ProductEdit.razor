@@ -29,6 +29,11 @@
         <InputNumber @bind-Value="product.Quantity" />
         <ValidationMessage For="@(() => product.Quantity)" />
     </div>
+    <div class="form-group">
+        <label>CODE:</label>
+        <InputText @bind-Value="product.ProductCode" />
+        <ValidationMessage For="@(() => product.ProductCode)" />
+    </div>
 
     <button type="submit">Save</button>
 </EditForm>

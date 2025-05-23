@@ -19,7 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IStoredProcedureHelper, StoredProcedureHelper>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-
+builder.Services.AddControllers();
 //commit program.cs
 builder.Services.AddMudServices(config =>
 {
@@ -42,8 +42,11 @@ builder.Services.AddGrpcClient<Service2.Service2Client>(options =>
 {
     options.Address = new Uri("https://localhost:5001");
 });
+
 var app = builder.Build();
 app.UseGrpcWeb();
+app.MapControllers(); // <-- dòng này phải có
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

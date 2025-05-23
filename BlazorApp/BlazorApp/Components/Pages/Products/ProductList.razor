@@ -2,6 +2,7 @@
 
 @page "/products"
 @using BlazorApp.Data
+@using BlazorApp.Ecrypt
 @using BlazorApp.Models
 @using BlazorApp.Repositories.ProductRepository
 @using Dapper
@@ -114,6 +115,7 @@
 	private int totalPages = 1;
 	protected override async Task OnInitializedAsync()
 	{
+		
 		//products = (await ProductRepository.GetAllAsync()).ToList();
 		Search();
 	}
@@ -160,6 +162,7 @@
 	}
 	private void Search()
 	{
+		var xx = EncryptionHelper.Decrypt("Ra914hyzHqQ0Ygy6SHAXVGY4/cWuB2gKPMlaZjnQsiY=");
 		// Gọi stored procedure để tìm kiếm sản phẩm theo từ khóa
 		var query = "GetAllProducts";
 		var parameters = new DynamicParameters();

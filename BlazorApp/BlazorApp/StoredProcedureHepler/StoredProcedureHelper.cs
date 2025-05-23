@@ -24,10 +24,17 @@ namespace BlazorApp.StoredProcedureHepler
 
         public List<T> ExecuteQuery<T>(string procedureName, object parameters = null)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            try
             {
-                connection.Open();
-                return connection.Query<T>(procedureName, parameters, commandType: CommandType.StoredProcedure).ToList();
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    return connection.Query<T>(procedureName, parameters, commandType: CommandType.StoredProcedure).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error executing stored procedure", e);
             }
         }
 
