@@ -61,7 +61,8 @@
 		<MudTh>Id</MudTh>
 		<MudTh>Name</MudTh>
 		<MudTh>Price</MudTh>
-		<MudTh>Quantity</MudTh>
+		<MudTh>Quantity</MudTh>		
+		<MudTh>ProductCode</MudTh>
 		<MudTh>Actions</MudTh>
 	</HeaderContent>
 	<RowTemplate>
@@ -69,6 +70,7 @@
 		<MudTd DataLabel="Name">@context.Name</MudTd>
 		<MudTd DataLabel="Price">@context.Price</MudTd>
 		<MudTd DataLabel="Quantity">@context.Quantity</MudTd>
+		<MudTd DataLabel="ProductCode">@context.ProductCode</MudTd>
 		<MudTd>
 			<MudButton OnClick="() => EditProduct(context.Id)" Color="Color.Info">Edit</MudButton>
 			<MudButton OnClick="() => ConfirmDelete(context.Id)" Color="Color.Error">Delete</MudButton>
@@ -84,9 +86,9 @@
 <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="ShowSnackBar">
 	Open Snackbar
 </MudButton>
-<button @onclick="AddProduct">Create New Product</button>
-<button @* @onclick="AddProduct" *@ onclick="ClickMe(this)">Create New Product</button>
-<button @onclick="CallJsFunction">Click Me</button>
+<MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="AddProduct">
+	Create New Product
+</MudButton>
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
