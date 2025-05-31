@@ -2,6 +2,7 @@
 using BlazorApp.Data;
 using BlazorApp.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.Products;
 
 namespace BlazorApp.Controllers
 {
@@ -16,9 +17,9 @@ namespace BlazorApp.Controllers
             _context = context;
         }
         [HttpGet()]
-        public IActionResult GetById(int id)
+        public IActionResult GetById(GetProductsDTO ProductsDTO)
         {
-            var product = _context.Products.Find(id);
+            var product = _context.Products.Find(ProductsDTO.ProductId);
             if (product == null) return NotFound();
             return Ok(product);
         }

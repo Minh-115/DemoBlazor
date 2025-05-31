@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{4CD0B7C6-31DE-469D-AAA2-495CABB43CE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{4CD0B7C6-31DE-469D-AAA2-495CABB43CE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WEB", "WEB\WEB.csproj", "{90AC5CE2-D4F4-4AE6-836A-5D5336EBE093}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{25C1CB69-52FB-4B88-9091-353307ADA922}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +19,19 @@ Global
 		{4CD0B7C6-31DE-469D-AAA2-495CABB43CE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CD0B7C6-31DE-469D-AAA2-495CABB43CE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CD0B7C6-31DE-469D-AAA2-495CABB43CE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90AC5CE2-D4F4-4AE6-836A-5D5336EBE093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90AC5CE2-D4F4-4AE6-836A-5D5336EBE093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90AC5CE2-D4F4-4AE6-836A-5D5336EBE093}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90AC5CE2-D4F4-4AE6-836A-5D5336EBE093}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25C1CB69-52FB-4B88-9091-353307ADA922}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25C1CB69-52FB-4B88-9091-353307ADA922}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25C1CB69-52FB-4B88-9091-353307ADA922}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25C1CB69-52FB-4B88-9091-353307ADA922}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D60D7551-33BA-45C9-856C-C805B9FE99E7}
 	EndGlobalSection
 EndGlobal

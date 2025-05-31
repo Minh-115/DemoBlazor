@@ -29,7 +29,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTO\" />
     <Folder Include="Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 	<!--<ItemGroup>
 		<Protobuf Include="Protos/greet.proto" GrpcServices="Client" />
