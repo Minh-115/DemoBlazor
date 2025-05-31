@@ -2,54 +2,39 @@
 using System.Diagnostics;
 using WEB.Models;
 using WEB.Constant;
-using Microsoft.AspNetCore.Connections;
+using WEB.CallApi;
+using Shared.Products;
+using WEB.ConfigClass;
+using Microsoft.Extensions.Options;
 
 namespace WEB.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IcallApi _icallApi;
+        private readonly ApiSettings _apiSettings;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IcallApi icallApi,
+            IOptions<ApiSettings> apiSettings )
         {
             _logger = logger;
+            _icallApi = icallApi;
+            _apiSettings = apiSettings.Value;
         }
 
         public async Task<IActionResult> Index()
         {
             using var client = new HttpClient();
-            var url = "https://localhost:7045/";
-            url += Endpoints.PRODUCT_GETBYID + "?id=5";
-            try
+            var url = _apiSettings.BaseUrl + Endpoints.PRODUCT_GETBYID;
+            var dto = new GetProductsDTO
             {
-                HttpResponseMessage response = await client.GetAsync(url);
-                if (response.IsSuccessStatusCode)
-                {
-                    var productJson = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine("Product received:");
-                    Console.WriteLine(productJson);
-                }
-                else
-                {
-                    Console.WriteLine($"Error: {response.StatusCode}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception occurred: " + ex.Message);
-            }
+                ProductId = 5
+            };
+            var result = await _icallApi.PostAsync(url, dto, null);
             return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

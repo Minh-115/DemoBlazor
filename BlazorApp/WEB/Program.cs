@@ -1,7 +1,13 @@
-var builder = WebApplication.CreateBuilder(args);
+using WEB.CallApi;
+using WEB.ConfigClass;
 
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpClient<IcallApi, CallApi>();
+builder.Services.Configure<ApiSettings>(
+    builder.Configuration.GetSection("ApiSettings"));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
 

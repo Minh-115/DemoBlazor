@@ -16,14 +16,13 @@ namespace BlazorApp.Controllers
         {
             _context = context;
         }
-        [HttpGet()]
+        
         public IActionResult GetById(GetProductsDTO ProductsDTO)
         {
             var product = _context.Products.Find(ProductsDTO.ProductId);
             if (product == null) return NotFound();
             return Ok(product);
         }
-        [HttpGet()]
         public IActionResult GetByCode(string productcode)
         {
             var product = _context.Products.AsNoTracking().FirstOrDefault(x=>x.ProductCode == productcode);

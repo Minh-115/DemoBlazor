@@ -2,51 +2,42 @@
 using System.Net.Http;
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
+using System.Text;
+using Newtonsoft.Json;
 namespace WEB.CallApi
 {
-    public class CallApi
+    public class CallApi : IcallApi
     {
         private readonly HttpClient _httpClient;
 
-        public CallApi()
+        public CallApi(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
+            _httpClient = httpClient;
         }
-        public async Task<string> GetAsync(string url, object queryParams = null, string bearerToken = null)
+        public async Task<string> PostAsync(string url, object body = null, string bearerToken = null)
         {
-            if (!string.IsNullOrEmpty(bearerToken))
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+
+            if (!string.IsNullOrWhiteSpace(bearerToken))
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
             }
 
-            // Convert object to query string nếu có queryParams
-            if (queryParams != null)
-            {
-                var queryString = ToQueryString(queryParams);
-                url = $"{url}?{queryString}";
-            }
+            var json = JsonConvert.SerializeObject(body ?? new { });
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
             try
             {
-                var response = await _httpClient.GetAsync(url);
-                response.EnsureSuccessStatusCode(); // Throw exception if not success
+                var response = await _httpClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
             {
                 return $"Error calling API: {ex.Message}";
             }
-        }
-        private string ToQueryString(object obj)
-        {
-            var properties = from p in obj.GetType().GetProperties()
-                             where p.GetValue(obj, null) != null
-                             select $"{HttpUtility.UrlEncode(p.Name)}={HttpUtility.UrlEncode(p.GetValue(obj, null)?.ToString())}";
-
-            return string.Join("&", properties);
         }
 
     }
