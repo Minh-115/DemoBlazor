@@ -16,7 +16,7 @@ namespace BlazorApp.Controllers
         {
             _context = context;
         }
-        
+
         public IActionResult GetById(GetProductsDTO ProductsDTO)
         {
             var product = _context.Products.Find(ProductsDTO.ProductId);
@@ -25,7 +25,7 @@ namespace BlazorApp.Controllers
         }
         public IActionResult GetByCode(string productcode)
         {
-            var product = _context.Products.AsNoTracking().FirstOrDefault(x=>x.ProductCode == productcode);
+            var product = _context.Products.AsNoTracking().FirstOrDefault(x => x.ProductCode == productcode);
             if (product == null) return NotFound();
             return Ok(product);
         }
