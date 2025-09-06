@@ -31,7 +31,7 @@ namespace WEB.Controllers
             var url = _apiSettings.BaseUrl + Endpoints.PRODUCT_GETBYID;
             var dto = new GetProductsDTO
             {
-                ProductId = 5
+                ProductId = 6
             };
             var result = await _icallApi.PostAsync(url, dto, null);
             return View();
@@ -63,7 +63,7 @@ namespace WEB.Controllers
             var config = new ConsumerConfig
             {
                 BootstrapServers = "localhost:29092",
-                GroupId = "my-consumer-group",
+                GroupId = "my-consumer-group-v1",
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
 
