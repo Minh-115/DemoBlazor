@@ -5,11 +5,7 @@ on:
     branches:
       - develop
       - master
-  push:
-    branches:
-      - develop
-      - master
-      - feature/**
+
 
 permissions:
   contents: read
@@ -47,8 +43,13 @@ jobs:
                 {\"role\": \"user\", \"content\": \"$DIFF\"}
               ]
             }")
+          
+          echo "=== RAW RESPONSE ==="
+          echo "$RESPONSE" | jq .
+
 
           REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // "❌ Không có phản hồi từ OpenAI"')
+          REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // .choices[0].delta.content // "❌ Không có phản hồi từ OpenAI"')
 
           echo "review<<EOF" >> $GITHUB_OUTPUT
           echo "$REVIEW" >> $GITHUB_OUTPUT
