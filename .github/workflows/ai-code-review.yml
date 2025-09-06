@@ -15,30 +15,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        fetch-depth: 0
-        ref: ${{ github.event.pull_request.head.sha }}
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Get PR Diff
         run: |
-          git diff origin/${{ github.base_ref }}...origin/${{ github.head_ref }} > diff.patch
+          BASE_SHA=${{ github.event.pull_request.base.sha }}
+          HEAD_SHA=${{ github.event.pull_request.head.sha }}
+
+          git fetch --no-tags --prune --depth=0 origin $BASE_SHA $HEAD_SHA
+          git diff $BASE_SHA $HEAD_SHA > diff.patch
+
           echo "=== DIFF SIZE ==="
           wc -c diff.patch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run AI Review
         id: ai-review
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          if [ ! -s diff.patch ]; then
-            echo "review<<EOF" >> $GITHUB_OUTPUT
-            echo "✅ Không có thay đổi đáng kể để review." >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          DIFF=$(head -n 500 diff.patch)
+          DIFF=$(cat diff.patch | head -c 15000)
 
           REVIEW=$(curl -s https://api.openai.com/v1/chat/completions \
             -H "Content-Type: application/json" \
@@ -46,10 +43,10 @@ jobs:
             -d "{
               \"model\": \"gpt-4o-mini\",
               \"messages\": [
-                {\"role\": \"system\", \"content\": \"Bạn là code reviewer chuyên nghiệp. Hãy phân tích phần diff sau, đưa ra: 1. Điểm tốt 2. Điểm cần cải thiện 3. Đề xuất cụ thể. Ngắn gọn, súc tích.\"},
+                {\"role\": \"system\", \"content\": \"Bạn là code reviewer chuyên nghiệp, hãy review diff code và nêu nhận xét rõ ràng, ngắn gọn\"},
                 {\"role\": \"user\", \"content\": \"$DIFF\"}
               ]
-            }" | jq -r '.choices[0].message.content // "⚠️ AI không đưa ra nhận xét."')
+            }" | jq -r '.choices[0].message.content')
 
           echo "review<<EOF" >> $GITHUB_OUTPUT
           echo "$REVIEW" >> $GITHUB_OUTPUT
