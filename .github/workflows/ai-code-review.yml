@@ -3,7 +3,9 @@ name: AI Code Review
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-
+permissions:
+  contents: read
+  pull-requests: write
 jobs:
   ai-review:
     runs-on: ubuntu-latest
