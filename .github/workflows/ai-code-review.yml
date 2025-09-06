@@ -15,8 +15,10 @@ jobs:
       - name: Get PR Diff
         run: |
           # Lấy diff giữa nhánh base (ví dụ: master/develop) và nhánh hiện tại
-          git fetch origin ${{ github.base_ref }}
-          git diff origin/${{ github.base_ref }}...HEAD --unified=0 > diff.patch
+          gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} \
+          -H "Accept: application/vnd.github.v3.diff" > diff.patch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run AI Review
         id: ai-review
