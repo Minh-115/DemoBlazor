@@ -11,10 +11,14 @@ on:
       - master
       - feature/**
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   ai-code-review:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -25,8 +29,6 @@ jobs:
         run: |
           git fetch origin ${{ github.base_ref }} ${{ github.head_ref }}
           git diff origin/${{ github.base_ref }}...origin/${{ github.head_ref }} > diff.patch
-          echo "=== DIFF SIZE ==="
-          wc -c diff.patch
 
       - name: Run AI Review
         id: ai-review
@@ -45,9 +47,6 @@ jobs:
                 {\"role\": \"user\", \"content\": \"$DIFF\"}
               ]
             }")
-
-          echo "=== RAW RESPONSE ==="
-          echo "$RESPONSE"
 
           REVIEW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content // "❌ Không có phản hồi từ OpenAI"')
 
