@@ -16,8 +16,17 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Lỗi
+//builder.Services.AddKeyedScoped<IStoredProcedureHelper>("Default", sp => new StoredProcedureHelper(sp.GetRequiredService<IConfiguration>(), "DefaultConnection"));
+//builder.Services.AddKeyedScoped<IStoredProcedureHelper>("Reporting", sp => new StoredProcedureHelper(sp.GetRequiredService<IConfiguration>(), "ReportingConnection"));
+// Không lỗi
+builder.Services.AddKeyedScoped<IStoredProcedureHelper>("Default",
+    (sp, key) => new StoredProcedureHelper(sp.GetRequiredService<IConfiguration>(), "DefaultConnection"));
 
-builder.Services.AddScoped<IStoredProcedureHelper, StoredProcedureHelper>();
+//builder.Services.AddKeyedScoped<IStoredProcedureHelper>("Reporting",
+    //(sp, key) => new StoredProcedureHelper(sp.GetRequiredService<IConfiguration>(), "ReportingConnection"));
+
+//builder.Services.AddScoped<IStoredProcedureHelper, StoredProcedureHelper>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddControllers();
 //commit program.cs

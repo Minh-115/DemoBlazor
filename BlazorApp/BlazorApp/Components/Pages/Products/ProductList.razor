@@ -13,9 +13,9 @@
 @rendermode InteractiveServer
 @inject IJSRuntime JSRuntime
 @inject IProductRepository ProductRepository
-@inject IStoredProcedureHelper _spHelper
+@* @inject IStoredProcedureHelper _spHelper *@
 @using MudBlazor
-
+@inject IServiceProvider ServiceProvider
 @inject ISnackbar Snackbar
 
 <h3>Products</h3>
@@ -115,15 +115,22 @@
 	private int pageSize = 5;
 	private int totalRows = 1;
 	private int totalPages = 1;
+	private IStoredProcedureHelper? _spHelperDefault;
+	private IStoredProcedureHelper? _spHelperReporting;
+
+
 	protected override async Task OnInitializedAsync()
 	{
-		
+		_spHelperDefault = ServiceProvider.GetRequiredKeyedService<IStoredProcedureHelper>("Default");
+
+		// _spHelperReporting = ServiceProvider.GetRequiredKeyedService<IStoredProcedureHelper>("Reporting");
 		//products = (await ProductRepository.GetAllAsync()).ToList();
 		Search();
 	}
 	protected override void OnParametersSet()
 	{
 		Console.WriteLine("reload");
+		
 	}
 	// protected override async Task OnAfterRenderAsync(bool firstRender)
 	// {		
@@ -171,7 +178,7 @@
 		parameters.Add("@keyword", searchKeyword);
 		parameters.Add("@pageIndex", pageIndex);
 		parameters.Add("@pageSize", pageSize);
-		products = _spHelper.ExecuteQuery<Product>(query, parameters);
+		products = _spHelperDefault.ExecuteQuery<Product>(query, parameters);
 		if(products.Any()){
 			totalRows = products.FirstOrDefault().totalRows;			
 			totalPages = (totalRows + pageSize - 1) / pageSize;
