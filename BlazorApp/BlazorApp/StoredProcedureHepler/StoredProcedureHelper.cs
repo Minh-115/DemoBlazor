@@ -8,9 +8,11 @@ namespace BlazorApp.StoredProcedureHepler
     {
         private readonly string _connectionString;
 
-        public StoredProcedureHelper(IConfiguration configuration)
+        public StoredProcedureHelper(IConfiguration configuration, string connectionName)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            //_connectionString = configuration.GetConnectionString("DefaultConnection");
+            _connectionString = configuration.GetConnectionString(connectionName)
+                        ?? throw new ArgumentNullException($"Connection string '{connectionName}' not found.");
         }
 
         public int ExecuteNonQuery(string procedureName, object parameters = null)
