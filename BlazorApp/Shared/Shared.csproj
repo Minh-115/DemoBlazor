@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Update="Protos\greet.proto">
+      <GrpcServices>Client</GrpcServices>
+    </None>
+  </ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="Protos\*.proto" GrpcServices="None" />
+	</ItemGroup>
 </Project>

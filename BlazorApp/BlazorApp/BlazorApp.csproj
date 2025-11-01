@@ -24,7 +24,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-	  <Protobuf Include="Protos/greet.proto" GrpcServices="Client" />
 
   </ItemGroup>
 
@@ -35,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
+	<Protobuf Include="..\Shared\Protos\greet.proto" GrpcServices="Client" />
   </ItemGroup>
 	<!--<ItemGroup>
 		<Protobuf Include="Protos/greet.proto" GrpcServices="Client" />

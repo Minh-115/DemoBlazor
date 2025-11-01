@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Products
+namespace Shared.Products;
+
+public class GetProductsDTO
 {
-    public class GetProductsDTO
-    {
-        public int ProductId { get; set; }
-    }
+    public int ProductId { get; set; }
 }

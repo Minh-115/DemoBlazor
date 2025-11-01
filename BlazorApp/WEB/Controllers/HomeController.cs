@@ -49,7 +49,7 @@ namespace WEB.Controllers
             try
             {
                 var result = await producer.ProduceAsync("test-topic", new Message<Null, string> { Value = message });
-                _logger.LogInformation("✔️ Sent to partition {Partition}, offset {Offset}", result.Partition, result.Offset);
+                _logger.LogInformation("✔️ Sent to partition {Partition}, offset {Offset}, Value {Value}", result.Partition, result.Offset , result.Value);
             }
             catch (ProduceException<Null, string> ex)
             {
@@ -70,7 +70,7 @@ namespace WEB.Controllers
             using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
             consumer.Subscribe("test-topic");
 
-            var cr = consumer.Consume(TimeSpan.FromSeconds(5));
+            var cr = consumer.Consume(TimeSpan.FromSeconds(50));
             if (cr != null)
             {
                 ViewBag.Message = $"📥 Nhận được message: {cr.Value}";
