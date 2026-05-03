@@ -16,6 +16,9 @@ message HelloReply {
 
 service Service2 {
     rpc SayHelloFromService2 (RequestService2) returns (ReplyService2);
+    rpc SayHelloFromService3 (RequestService3) returns (ReplyService3);
+    rpc SayHelloFromService4 (RequestService4) returns (ReplyService4);
+
 }
 
 message RequestService2 {
@@ -23,5 +26,19 @@ message RequestService2 {
 }
 
 message ReplyService2 {
+    string message = 1;
+}
+message RequestService3 {
+    string name = 1;
+}
+
+message ReplyService3 {
+    string message = 1;
+}
+message RequestService4 {
+    string name = 1;
+}
+
+message ReplyService4 {
     string message = 1;
 }

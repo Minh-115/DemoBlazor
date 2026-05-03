@@ -24,14 +24,14 @@ namespace BlazorApp.StoredProcedureHepler
             }
         }
 
-        public List<T> ExecuteQuery<T>(string procedureName, object parameters = null)
+        public async Task<List<T>> ExecuteQuery<T>(string procedureName, object parameters = null)
         {
             try
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    return connection.Query<T>(procedureName, parameters, commandType: CommandType.StoredProcedure).ToList();
+                    return (await connection.QueryAsync<T>(procedureName, parameters, commandType: CommandType.StoredProcedure)).ToList();
                 }
             }
             catch (Exception e)
@@ -40,12 +40,12 @@ namespace BlazorApp.StoredProcedureHepler
             }
         }
 
-        public object ExecuteScalar(string procedureName, object parameters = null)
+        public async Task<object> ExecuteScalar(string procedureName, object parameters = null)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                return connection.ExecuteScalar(procedureName, parameters, commandType: CommandType.StoredProcedure);
+                return await connection.ExecuteScalarAsync(procedureName, parameters, commandType: CommandType.StoredProcedure);
             }
         }
 

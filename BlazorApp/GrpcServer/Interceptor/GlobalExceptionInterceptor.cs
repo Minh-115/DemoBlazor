@@ -1,6 +1,7 @@
 ﻿using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Grpc.Net.Client.Configuration;
+using System.Text.Json;
 
 public class GlobalExceptionInterceptor : Interceptor
 {
@@ -17,11 +18,30 @@ public class GlobalExceptionInterceptor : Interceptor
         UnaryServerMethod<TRequest, TResponse> continuation)
     {
         var methodName = context.Method;
+        var requestType = typeof(TRequest).Name;
+
         try
         {
-            // Cho phép request chạy tiếp
-            return await continuation(request, context);
-        }
+            // Log request vào
+            _logger.LogInformation(
+                "gRPC Request => Method: {Method}, RequestType: {RequestType}, Payload: {Payload}",
+                methodName,
+                requestType,
+                SafeSerialize(request)
+            );
+
+            var response = await continuation(request, context);
+
+            // Log response ra
+            _logger.LogInformation(
+                "gRPC Response <= Method: {Method}, ResponseType: {ResponseType}, Payload: {Payload}",
+                methodName,
+                typeof(TResponse).Name,
+                SafeSerialize(response)
+            );
+
+            return response;
+        } 
         catch (RpcException ex)
         {
             _logger.LogWarning(ex,
@@ -36,14 +56,38 @@ public class GlobalExceptionInterceptor : Interceptor
         catch (Exception ex)
         {
             _logger.LogError(ex,
-                "Unhandled exception in gRPC method {Method}. Exception={ExceptionType}",
+                "Loi gRPC ham {Method}. Exception={ExceptionType}, Message={Message}",
                 methodName,
-                ex.GetType().Name
+                ex.GetType().Name,
+                ex.Message
             );
 
-            throw new Exception(
-                "Đã xảy ra lỗi hệ thống"
+            throw new RpcException(
+                new Status(
+                    StatusCode.Internal,
+                    ex.Message
+                )
             );
+        }
+    }
+    private static string SafeSerialize<T>(T obj)
+    {
+        if (obj == null)
+        {
+            return "null";
+        }
+
+        try
+        {
+            return JsonSerializer.Serialize(obj, new JsonSerializerOptions
+            {
+                WriteIndented = false,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+        }
+        catch
+        {
+            return $"[Cannot serialize type: {typeof(T).Name}]";
         }
     }
 }

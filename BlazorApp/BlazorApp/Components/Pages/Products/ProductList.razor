@@ -17,7 +17,6 @@
 @using MudBlazor
 @inject IServiceProvider ServiceProvider
 @inject ISnackbar Snackbar
-
 <h3>Products</h3>
 
 @* <input placeholder="keyword" @bind="searchKeyword" />
@@ -68,7 +67,7 @@
 	<RowTemplate>
 		<MudTd DataLabel="Id">@context.Id</MudTd>
 		<MudTd DataLabel="Name">@context.Name</MudTd>
-		<MudTd DataLabel="Price">@context.Price</MudTd>
+		@* <MudTd DataLabel="Price">@context.Price</MudTd> *@
 		<MudTd DataLabel="Quantity">@context.Quantity</MudTd>
 		<MudTd DataLabel="ProductCode">@context.ProductCode</MudTd>
 		<MudTd>
@@ -125,21 +124,21 @@
 
 		// _spHelperReporting = ServiceProvider.GetRequiredKeyedService<IStoredProcedureHelper>("Reporting");
 		//products = (await ProductRepository.GetAllAsync()).ToList();
-		Search();
+		await Search();
 	}
 	protected override void OnParametersSet()
 	{
 		Console.WriteLine("reload");
-		
+
 	}
 	// protected override async Task OnAfterRenderAsync(bool firstRender)
 	// {		
 	// 		 Search();		
 	// }
-	private void OnPageIndexChanged(int newPageIndex)
+	private async Task OnPageIndexChanged(int newPageIndex)
 	{
 		pageIndex = newPageIndex;  // Cập nhật lại pageIndex nếu cần
-		Search();
+		await Search();
 	}
 	private void AddProduct()
 	{
@@ -169,8 +168,29 @@
 		// Hiển thị modal xác nhận (sử dụng Bootstrap JS)
 		JSRuntime.InvokeVoidAsync("showModalConfirmDelete");
 	}
-	private void Search()
+	// private void Search()
+	// {
+		// var xx = EncryptionHelper.Decrypt("Ra914hyzHqQ0Ygy6SHAXVGY4/cWuB2gKPMlaZjnQsiY=");
+		// // Gọi stored procedure để tìm kiếm sản phẩm theo từ khóa
+		// var query = "GetAllProducts";
+		// var parameters = new DynamicParameters();
+		// parameters.Add("@keyword", searchKeyword);
+		// parameters.Add("@pageIndex", pageIndex);
+		// parameters.Add("@pageSize", pageSize);
+		// products = _spHelperDefault.ExecuteQuery<Product>(query, parameters);
+		// if(products.Any()){
+		// 	totalRows = products.FirstOrDefault().totalRows;			
+		// 	totalPages = (totalRows + pageSize - 1) / pageSize;
+		// }
+		// else
+		// {
+		// 	totalRows = 0;
+		// 	totalPages = 0;
+		// }
+	//}
+	private async Task Search()
 	{
+		//products = await ElasticService.SearchProductsAdvancedAsync(searchKeyword, null, null);
 		var xx = EncryptionHelper.Decrypt("Ra914hyzHqQ0Ygy6SHAXVGY4/cWuB2gKPMlaZjnQsiY=");
 		// Gọi stored procedure để tìm kiếm sản phẩm theo từ khóa
 		var query = "GetAllProducts";
@@ -178,9 +198,9 @@
 		parameters.Add("@keyword", searchKeyword);
 		parameters.Add("@pageIndex", pageIndex);
 		parameters.Add("@pageSize", pageSize);
-		products = _spHelperDefault.ExecuteQuery<Product>(query, parameters);
+		products = await _spHelperDefault.ExecuteQuery<Product>(query, parameters);
 		if(products.Any()){
-			totalRows = products.FirstOrDefault().totalRows;			
+			totalRows = products.FirstOrDefault().totalRows;
 			totalPages = (totalRows + pageSize - 1) / pageSize;
 		}
 		else

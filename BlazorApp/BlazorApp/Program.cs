@@ -51,7 +51,9 @@ builder.Services.AddGrpcClient<Service2.Service2Client>(options =>
 {
     options.Address = new Uri("https://localhost:5001");
 });
-
+//builder.Services.AddScoped<IElasticService, ElasticService>();
+//builder.Services.AddSingleton<IElasticProductService, ElasticProductService>();
+//builder.Services.AddHostedService<ProductKafkaConsumerService>();
 var app = builder.Build();
 app.UseGrpcWeb();
 app.MapControllers(); // <-- dòng này phải có

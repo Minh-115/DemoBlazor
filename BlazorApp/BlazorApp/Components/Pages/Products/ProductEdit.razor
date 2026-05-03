@@ -57,6 +57,7 @@
         {
             await ProductRepository.UpdateAsync(product);
         }
+        // await ElasticService.IndexProductAsync(product);
         Navigation.NavigateTo("/products");
     }
 }
