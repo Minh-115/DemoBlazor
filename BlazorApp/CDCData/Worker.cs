@@ -1,34 +1,11 @@
 using Avro.Generic;
 using Confluent.Kafka;
-
 using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using Elastic.Clients.Elasticsearch;
 using System.Text.Json;
 namespace CDCData;
-
-//public class Worker : BackgroundService
-//{
-//    private readonly ILogger<Worker> _logger;
-
-//    public Worker(ILogger<Worker> logger)
-//    {
-//        _logger = logger;
-//    }
-
-//    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-//    {
-//        while (!stoppingToken.IsCancellationRequested)
-//        {
-//            if (_logger.IsEnabled(LogLevel.Information))
-//            {
-//                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-//            }
-//            await Task.Delay(1000, stoppingToken);
-//        }
-//    }
-//}
 public class Product
 {
     public int Id { get; set; }
@@ -125,7 +102,7 @@ public class ProductKafkaConsumerService : BackgroundService
         {
             try
             {
-                var result = consumer.Consume();
+                var result = consumer.Consume(stoppingToken);
                 var record = result.Message.Value;
                 var message = MapGenericRecordToModel(record);
                 await HandleCdcMessage(message, stoppingToken);
@@ -214,7 +191,6 @@ public class ProductKafkaConsumerService : BackgroundService
         if (value == null)
             return null;
 
-        // Nếu là GenericRecord → recursive convert
         if (value is GenericRecord record)
         {
             var dict = new Dictionary<string, object?>();
@@ -227,14 +203,10 @@ public class ProductKafkaConsumerService : BackgroundService
 
             return dict;
         }
-
-        // Nếu là array/list
         if (value is IEnumerable<object> list && value is not string)
         {
             return list.Select(ConvertRecord).ToList();
         }
-
-        // Primitive type
         return value;
     }
 }
